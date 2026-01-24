@@ -1,6 +1,8 @@
 package com.example.demoProject.Controller;
 
 import com.example.demoProject.Model.Users;
+import com.example.demoProject.Service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,30 +13,38 @@ import java.util.List;
 @RestController
 public class UserController
 {
-    private List<Users> usersList = new ArrayList<>();
+    @Autowired
+    private UserService userService;
+
+
 
     @GetMapping("/getUsers")
     public ResponseEntity<List<Users>> getUsers()
     {
-        return new ResponseEntity<>(usersList, HttpStatus.OK);
+        return userService.getUsersService();
     }
 
     @PostMapping("/registerUser")
     public ResponseEntity<Users> registerUser(@RequestBody Users newUser)
     {
-        usersList.add(newUser);
-        return new ResponseEntity<>(newUser, HttpStatus.ACCEPTED);
+       return userService.registerUserService(newUser);
     }
 
     @GetMapping("/getUsers/{id}")
-    public ResponseEntity<Users> getUserById(@PathVariable int id)
+    public ResponseEntity<Users> getUserById(@PathVariable Long id)
     {
-        for(Users user : usersList)
-        {
-            if(user.getId() == id) {
-                return new ResponseEntity<>(user, HttpStatus.FOUND);
-            }
-        }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return userService.getUserByIdService(id);
+    }
+
+    @PutMapping("/updateUser/{id}")
+    public ResponseEntity<Users> updateUser(@RequestBody Users updatedUserData, @PathVariable Long id)
+    {
+       return userService.updateUserService(updatedUserData, id);
+    }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Users> deleteUser(@PathVariable Long id)
+    {
+        return userService.deleteUserService(id);
+
     }
 }
