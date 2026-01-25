@@ -21,5 +21,9 @@ public class Users
     public String firstName;
     public String lastName;
 
+    public String email;
+    public String phone;
+    public UserRole role = UserRole.CUSTOMER;
+
 
 }
