@@ -21,30 +21,36 @@ public class UserController
     @GetMapping("/getUsers")
     public ResponseEntity<List<Users>> getUsers()
     {
-        return userService.getUsersService();
+        List<Users > usersList =  userService.getUsersService();
+        return new ResponseEntity<>(usersList, HttpStatus.OK);
     }
 
     @PostMapping("/registerUser")
     public ResponseEntity<Users> registerUser(@RequestBody Users newUser)
     {
-       return userService.registerUserService(newUser);
+        Users registeredUser = userService.registerUserService(newUser);
+        return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
     }
 
     @GetMapping("/getUsers/{id}")
     public ResponseEntity<Users> getUserById(@PathVariable Long id)
     {
-        return userService.getUserByIdService(id);
+       Users fetchedUseer = userService.getUserByIdService(id);
+        return new ResponseEntity<>(fetchedUseer, HttpStatus.FOUND);
     }
 
     @PutMapping("/updateUser/{id}")
     public ResponseEntity<Users> updateUser(@RequestBody Users updatedUserData, @PathVariable Long id)
     {
-       return userService.updateUserService(updatedUserData, id);
+        Users updatedUser = userService.updateUserService(updatedUserData, id);;
+
+       return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Users> deleteUser(@PathVariable Long id)
     {
-        return userService.deleteUserService(id);
+        Users deletedUser =  userService.deleteUserService(id);
+        return new ResponseEntity<>(deletedUser, HttpStatus.OK);
 
     }
 }

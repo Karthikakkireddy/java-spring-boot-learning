@@ -1,14 +1,15 @@
 package com.example.demoProject.Service;
 
+import com.example.demoProject.Exceptions.UserNotFoundException;
 import com.example.demoProject.Model.Users;
 import com.example.demoProject.Repository.UserRepo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import org.springframework.beans.factory.annotation.Autowired;
+
+
+import org.springframework.stereotype.Service;
+
+
 import java.util.List;
 
 @Service
@@ -18,53 +19,37 @@ public class UserService
     private UserRepo userRepo;
 
 
-    public ResponseEntity<List<Users>> getUsersService()
+    public List<Users> getUsersService()
     {
-        List<Users>  usersList = userRepo.findAll();
-        return new ResponseEntity<>(usersList, HttpStatus.OK);
+        return userRepo.findAll();
     }
 
 
-    public ResponseEntity<Users> registerUserService( Users newUser)
+    public Users registerUserService( Users newUser)
     {
 
-        userRepo.save(newUser);
-        return new ResponseEntity<>(newUser, HttpStatus.ACCEPTED);
+        return userRepo.save(newUser);
     }
 
 
-    public ResponseEntity<Users> getUserByIdService( Long id)
+    public Users getUserByIdService(Long id)
     {
-        Users user  = userRepo.findById(id).orElse(null);
-        if(user != null)
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return userRepo.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
 
-    public ResponseEntity<Users> updateUserService( Users updatedUserData,  Long id)
+    public Users updateUserService( Users updatedUserData,  Long id)
     {
-        Users user  = userRepo.findById(id).orElse(null);
-        if(user != null)
-        {
+        Users user  = userRepo.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+
             user.setFirstName(updatedUserData.getFirstName());
             user.setLastName(updatedUserData.getLastName());
             userRepo.save(user);
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        }
-
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return userRepo.save(user);
     }
 
-    public ResponseEntity<Users> deleteUserService( Long id)
+    public Users deleteUserService( Long id)
     {
-        Users user  = userRepo.findById(id).orElse(null);
-        if(user != null)
-        {
-            userRepo.deleteById(id);
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-
+            return userRepo.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 }
