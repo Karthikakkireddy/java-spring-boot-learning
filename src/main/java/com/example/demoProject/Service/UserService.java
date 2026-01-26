@@ -65,13 +65,11 @@ public class UserService
             return mapToUserResponse(userRepo.save(user));
     }
 
-    public UserResponse deleteUserService( Long id)
+    public void deleteUserService( Long id)
     {
           Users user =   userRepo.findById(id).orElseThrow(() -> new UserNotFoundException(id));
 
           userRepo.delete(user);
-
-          return mapToUserResponse(user);
     }
 
     private UserResponse mapToUserResponse(Users user)
