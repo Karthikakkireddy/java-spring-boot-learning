@@ -19,28 +19,13 @@ public class ProductService
 
     public ProductResponse createProductService(ProductRequest productRequest)
     {
-        Product newProduct = new Product(
-                productRequest.getName(),
-                productRequest.getDescription(),
-                productRequest.getPrice(),
-                productRequest.getStockQuantity(),
-                productRequest.getCategory(),
-                productRequest.getImageUrl()
-        );
+        Product newProduct = mapToProductEntity(productRequest);
 
         Product savedProduct = productsRepo.save(newProduct);
 
+        ProductResponse savedProductResponse = mapToProductResponse(savedProduct);
 
-        return new ProductResponse(
-                savedProduct.getId(),
-                savedProduct.getName(),
-                savedProduct.getDescription(),
-                savedProduct.getPrice(),
-                savedProduct.getStockQuantity(),
-                savedProduct.getCategory(),
-                savedProduct.getImageUrl(),
-                savedProduct.getActive()
-        );
+        return savedProductResponse;
     }
 
 
@@ -59,32 +44,14 @@ public class ProductService
         Product updatedProduct = productsRepo.save(oldDataProduct);
 
 
-        return new ProductResponse(
-                updatedProduct.getId(),
-                updatedProduct.getName(),
-                updatedProduct.getDescription(),
-                updatedProduct.getPrice(),
-                updatedProduct.getStockQuantity(),
-                updatedProduct.getCategory(),
-                updatedProduct.getImageUrl(),
-                updatedProduct.getActive()
-        );
+        return mapToProductResponse(updatedProduct);
     }
 
     public ProductResponse getProductByIdService(Long id)
     {
         Product fetchedProduct = productsRepo.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
 
-        return new ProductResponse(
-                fetchedProduct.getId(),
-                fetchedProduct.getName(),
-                fetchedProduct.getDescription(),
-                fetchedProduct.getPrice(),
-                fetchedProduct.getStockQuantity(),
-                fetchedProduct.getCategory(),
-                fetchedProduct.getImageUrl(),
-                fetchedProduct.getActive()
-        );
+        return mapToProductResponse(fetchedProduct);
     }
 
     public List<ProductResponse> getProductService()
@@ -92,21 +59,8 @@ public class ProductService
         List<Product> productList = productsRepo.findAll();
 
         List<ProductResponse> productResponseList = productList.stream()
-                .map(
-                        product -> {
-                            ProductResponse productResponse = new ProductResponse(
-                                    product.getId(),
-                                    product.getName(),
-                                    product.getDescription(),
-                                    product.getPrice(),
-                                    product.getStockQuantity(),
-                                    product.getCategory(),
-                                    product.getImageUrl(),
-                                    product.getActive()
-                            );
-                            return productResponse;
-                        }
-                ).toList();
+                .map(product -> mapToProductResponse(product))
+                .toList();
 
         return productResponseList;
     }
@@ -115,5 +69,35 @@ public class ProductService
     {
         Product product = productsRepo.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
         productsRepo.delete(product);
+    }
+
+
+    private Product mapToProductEntity(ProductRequest productRequest)
+    {
+        Product product = new Product();
+        product.setName(productRequest.getName());
+        product.setDescription(productRequest.getDescription());
+        product.setPrice( productRequest.getPrice());
+        product.setStockQuantity(productRequest.getStockQuantity());
+        product.setCategory(productRequest.getCategory());
+        product.setImageUrl(productRequest.getImageUrl());
+
+        return product;
+
+    }
+
+    private ProductResponse mapToProductResponse(Product product)
+    {
+        ProductResponse productResponse = new ProductResponse();
+        productResponse.setId(product.getId());
+        productResponse.setName(product.getName());
+        productResponse.setDescription(product.getDescription());
+        productResponse.setPrice( product.getPrice());
+        productResponse.setStockQuantity(product.getStockQuantity());
+        productResponse.setCategory(product.getCategory());
+        productResponse.setImageUrl(product.getImageUrl());
+        productResponse.setActive(product.getActive());
+        return productResponse;
+
     }
 }

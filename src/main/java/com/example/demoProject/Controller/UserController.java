@@ -5,6 +5,8 @@ import com.example.demoProject.DTO.UserResponse;
 import com.example.demoProject.Model.Users;
 import com.example.demoProject.Service.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class UserController
 {
-    @Autowired
-    private UserService userService;
+
+
+    private final UserService userService;
+
 
 
 
