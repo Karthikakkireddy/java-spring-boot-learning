@@ -3,6 +3,7 @@ package com.example.demoProject.Service;
 
 import com.example.demoProject.DTO.ProductRequest;
 import com.example.demoProject.DTO.ProductResponse;
+import com.example.demoProject.Exceptions.ProductNotFoundException;
 import com.example.demoProject.Model.Product;
 import com.example.demoProject.Repository.ProductsRepo;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +46,7 @@ public class ProductService
 
     public ProductResponse updateProductService(ProductRequest productRequest, Long id)
     {
-        Product oldDataProduct = productsRepo.findById(id).orElse(null);
+        Product oldDataProduct = productsRepo.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
         oldDataProduct.setName(productRequest.getName());
         oldDataProduct.setDescription(productRequest.getDescription());
         oldDataProduct.setActive(productRequest.getActive());
@@ -72,7 +73,7 @@ public class ProductService
 
     public ProductResponse getProductByIdService(Long id)
     {
-        Product fetchedProduct = productsRepo.findById(id).orElse(null);
+        Product fetchedProduct = productsRepo.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
 
         return new ProductResponse(
                 fetchedProduct.getId(),
@@ -112,6 +113,7 @@ public class ProductService
 
     public void deleteProduct(Long id)
     {
-        productsRepo.deleteById(id);
+        Product product = productsRepo.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
+        productsRepo.delete(product);
     }
 }
