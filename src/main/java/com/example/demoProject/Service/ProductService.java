@@ -8,6 +8,8 @@ import com.example.demoProject.Repository.ProductsRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProductService
@@ -66,5 +68,50 @@ public class ProductService
                 updatedProduct.getImageUrl(),
                 updatedProduct.getActive()
         );
+    }
+
+    public ProductResponse getProductByIdService(Long id)
+    {
+        Product fetchedProduct = productsRepo.findById(id).orElse(null);
+
+        return new ProductResponse(
+                fetchedProduct.getId(),
+                fetchedProduct.getName(),
+                fetchedProduct.getDescription(),
+                fetchedProduct.getPrice(),
+                fetchedProduct.getStockQuantity(),
+                fetchedProduct.getCategory(),
+                fetchedProduct.getImageUrl(),
+                fetchedProduct.getActive()
+        );
+    }
+
+    public List<ProductResponse> getProductService()
+    {
+        List<Product> productList = productsRepo.findAll();
+
+        List<ProductResponse> productResponseList = productList.stream()
+                .map(
+                        product -> {
+                            ProductResponse productResponse = new ProductResponse(
+                                    product.getId(),
+                                    product.getName(),
+                                    product.getDescription(),
+                                    product.getPrice(),
+                                    product.getStockQuantity(),
+                                    product.getCategory(),
+                                    product.getImageUrl(),
+                                    product.getActive()
+                            );
+                            return productResponse;
+                        }
+                ).toList();
+
+        return productResponseList;
+    }
+
+    public void deleteProduct(Long id)
+    {
+        productsRepo.deleteById(id);
     }
 }
