@@ -61,4 +61,15 @@ public class ProductController
         productService.deleteProduct(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("/products/search")
+    public ResponseEntity<List<ProductResponse>> searchProducts(
+            @RequestParam String keyword) {
+       return new ResponseEntity<>(productService.searchProducts(keyword), HttpStatus.OK);
+    }
+
+    @GetMapping("/products/active")
+    public ResponseEntity<List<ProductResponse>> getActiveProducts() {
+        return ResponseEntity.ok(productService.getActiveProducts());
+    }
 }

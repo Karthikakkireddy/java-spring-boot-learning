@@ -71,6 +71,20 @@ public class ProductService
         productsRepo.delete(product);
     }
 
+    public List<ProductResponse> searchProducts(String keyword) {
+        return productsRepo.searchByKeyword(keyword)
+                .stream()
+                .map(this::mapToProductResponse)
+                .toList();
+    }
+
+    public List<ProductResponse> getActiveProducts() {
+        return productsRepo.findByActiveTrue()
+                .stream()
+                .map(this::mapToProductResponse)
+                .toList();
+    }
+
 
     private Product mapToProductEntity(ProductRequest productRequest)
     {
