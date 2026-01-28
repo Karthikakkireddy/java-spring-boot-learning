@@ -53,4 +53,20 @@ public class CartItemService
         }
         return true;
     }
+
+    public boolean removeItemCartService(String userId, Long productId)
+    {
+        Product product = productsRepo.findById(productId).orElseThrow(() -> new ProductNotFoundException(productId));
+        Users user = userRepo.findById(Long.valueOf(userId)).orElseThrow(() -> new UserNotFoundException(Long.valueOf(userId)));
+
+        CartItem cartItem = cartItemRepo.findByUserAndProduct(user, product);
+
+        if (cartItem == null) {
+            return false; // item not in cart
+        }
+
+        cartItemRepo.delete(cartItem);
+        return true;
+
+    }
 }

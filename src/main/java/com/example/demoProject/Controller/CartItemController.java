@@ -1,6 +1,7 @@
 package com.example.demoProject.Controller;
 
 import com.example.demoProject.DTO.CartItemRequest;
+import com.example.demoProject.Model.Product;
 import com.example.demoProject.Service.CartItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,5 +29,20 @@ public class CartItemController
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 
     }
+
+    @DeleteMapping("/deleteItem/{productId}")
+    public ResponseEntity<Void> removeFromCart(
+            @RequestHeader("X-User_ID") String userId,
+           @PathVariable Long productId
+    )
+    {
+        boolean removed = cartService.removeItemCartService(userId, productId);
+
+        return removed
+                ? ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+
 
 }
